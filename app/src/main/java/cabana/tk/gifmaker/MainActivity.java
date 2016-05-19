@@ -145,7 +145,7 @@ public class MainActivity extends BaseActivity
                 Global.getSurface(), null /*Callbacks*/, null /*Handler*/);
     }
 
-    //接受请求结果，并执行请求成功后大的逻辑
+    //接受请求结果，并执行请求成功的逻辑
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
