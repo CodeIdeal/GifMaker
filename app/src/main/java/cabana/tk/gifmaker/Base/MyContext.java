@@ -1,6 +1,7 @@
 package cabana.tk.gifmaker.Base;
 
 import android.app.Application;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -10,6 +11,7 @@ import android.view.WindowManager;
  */
 public class MyContext extends Application{
     public static android.content.Context mContext;
+    public static Handler mHandler;
     public static int ScreenWidth;
     public static int ScreenHeight;
     public static int ScreenDPI;
@@ -24,6 +26,7 @@ public class MyContext extends Application{
 
     private void initContext() {
         mContext = getApplicationContext();
+        mHandler = new Handler();
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
     }
 

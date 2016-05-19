@@ -56,12 +56,6 @@ public class MainActivity extends BaseActivity
                 }
             });
 
-            mFloatMenuService.setClearImage(new FloatMenuService.ClearImageListener() {
-                @Override
-                public void ClearImage() {
-                    image.setImageResource(R.drawable.ic_menu_camera);
-                }
-            });
         }
 
         @Override
