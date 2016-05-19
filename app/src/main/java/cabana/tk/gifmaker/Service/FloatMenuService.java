@@ -1,13 +1,16 @@
 package cabana.tk.gifmaker.Service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.projection.MediaProjectionManager;
 import android.os.Binder;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+
+import java.util.ArrayList;
 
 import cabana.tk.gifmaker.Base.Global;
 import cabana.tk.gifmaker.Base.MyContext;
@@ -19,9 +22,26 @@ import cabana.tk.gifmaker.View.FloatView;
 public class FloatMenuService extends Service{
     private FloatView floatView;
     private MediaProjectionManager mpm;
-    private Context mContext;
     private DisplayImageListener mDisplayImageListener;
-    private ClearImageListener mClearImageListener;
+    private ArrayList<Bitmap> mPics= new ArrayList<>();
+    private boolean toggle;
+    private HandlerThread gifMakerThread = new HandlerThread("gifMaker",Thread.NORM_PRIORITY);
+    private Handler mGifMakerHandler = new Handler(gifMakerThread.getLooper());
+    private Runnable mGifMakerTask = new Runnable() {
+        @Override
+        public void run() {
+            if(!toggle){
+                mGifMakerHandler.removeCallbacks(this);
+                dealThePics();
+            }
+            mPics.add(Global.getCurrentImage());
+            mGifMakerHandler.postDelayed(this,250);
+        }
+
+        private void dealThePics() {
+
+        }
+    };
 
     @Nullable
     @Override
@@ -32,21 +52,23 @@ public class FloatMenuService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-        //初始化Context
-        this.mContext = MyContext.mContext;
-
         floatView = FloatView.getInstance(MyContext.mContext);
         floatView.setOnclickListener(new FloatView.clickListener() {
             @Override
             public void onclick() {
-                mDisplayImageListener.displayImage(Global.getCurrentImage());
+                if(!toggle){
+                    mDisplayImageListener.displayImage(Global.getCurrentImage());
+                }else{
+                    toggle = false;
+                }
             }
         });
 
         floatView.setOnlongpressListener(new FloatView.longPressListener() {
             @Override
             public void onLongPress() {
-                mClearImageListener.ClearImage();
+                toggle = true;
+                mGifMakerHandler.post(mGifMakerTask);
             }
         });
 
@@ -78,15 +100,8 @@ public class FloatMenuService extends Service{
         this.mDisplayImageListener = listener;
     }
 
-    public void setClearImage(ClearImageListener listener){
-        this.mClearImageListener = listener;
-    }
-
     public interface DisplayImageListener{
         void displayImage(Bitmap bitmap);
     }
 
-    public interface ClearImageListener{
-        void ClearImage();
-    }
 }
