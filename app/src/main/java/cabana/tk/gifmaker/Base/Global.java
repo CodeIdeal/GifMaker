@@ -1,6 +1,7 @@
 package cabana.tk.gifmaker.Base;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.hardware.display.VirtualDisplay;
 import android.media.Image;
@@ -64,7 +65,10 @@ public class Global {
 
         Bitmap bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, height, Bitmap.Config.ARGB_8888);
         bitmap.copyPixelsFromBuffer(buffer);
-        Bitmap mbitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height);
+
+        Matrix matrix = new Matrix();
+        matrix.setScale(0.5f, 0.5f);// 缩小为原来的一半
+        Bitmap mbitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height,matrix,true);
         image.close();
         return mbitmap;
     }
